@@ -1,0 +1,66 @@
+  private validate() {
+    const test = 'GHETLY';
+    const firstLetter = test.charAt(0);
+    const testValues = Test.filter(t => t.label === firstLetter);
+    let indexWorld = null;
+    let isValid = false;
+    for (let j = 0; j < testValues.length && !isValid; j++) {
+      const war: {
+        row: number,
+        col: number
+      }[] = [];
+      indexWorld = testValues[j];
+      war.push({
+        row: indexWorld.rPos,
+        col: indexWorld.cPos
+      });
+      let breakNow = false;
+      for (let i = 1; i < test.length && !isValid && !breakNow; i++) {
+        const letter = test.charAt(i);
+        const nextValue = Test.filter(t => t.label === letter);
+        for (let k = 0; k < nextValue.length && !isValid; k++) {
+          const wVal = {
+            row: nextValue[k].rPos,
+            col: nextValue[k].cPos
+          };
+          if (!war.some(w => w.row === nextValue[k].rPos && w.col === nextValue[k].cPos) && this.testRange(indexWorld.rPos, nextValue[k].rPos)) {
+            if (this.testRange(indexWorld.cPos, nextValue[k].cPos)) {
+              indexWorld = nextValue[k];
+              war.push({
+                row: indexWorld.rPos,
+                col: indexWorld.cPos
+              });
+              if (i === test.length - 1) {
+                isValid = true;
+              }
+            } else {
+              if (k === nextValue.length - 1) {
+                breakNow = true;
+              }
+            }
+          } else {
+            if (k === nextValue.length - 1) {
+              breakNow = true;
+            }
+          }
+        }
+      }
+    }
+    if (isValid) {
+      console.log('Hello');
+    } else {
+      console.log('world');
+    }
+  }
+
+  private testRange(stableIndex: number, testIndex: number) {
+    let inRange = false;
+    if (testIndex === stableIndex) {
+      inRange = true;
+    } else if (testIndex > stableIndex) {
+      inRange = stableIndex + 1 === testIndex;
+    } else if (testIndex < stableIndex) {
+      inRange = stableIndex - 1 === testIndex;
+    }
+    return inRange;
+  }
